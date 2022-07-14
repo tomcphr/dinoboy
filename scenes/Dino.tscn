@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://sprites/animations/blue-dino.tres" type="SpriteFrames" id=1]
+
+[node name="Dino" type="Node2D"]
+
+[node name="Anim" type="AnimatedSprite" parent="."]
+frames = ExtResource( 1 )
+animation = "idle"
+frame = 1
+playing = true
