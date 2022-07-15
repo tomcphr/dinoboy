@@ -1,9 +1,8 @@
 extends Node2D
 
-class_name Player
+class_name Actions
 
 var sneaking: bool = false;
-var attacking: bool = false;
 
 func getMovement():
 	var movement = Vector2.ZERO;
@@ -21,11 +20,6 @@ func isMoving():
 	return getMovement().length() > 0;
 
 func isSneaking():
-	if Input.is_action_just_released("game_shift"):
+	if Input.is_action_just_pressed("game_shift"):
 		sneaking = !sneaking;
 	return sneaking;
-
-func pressedAttack():
-	if Input.is_action_just_pressed("game_attack"):
-		return true;
-	return false;
