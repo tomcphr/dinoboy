@@ -1,34 +1,51 @@
 extends Node2D
 
-# Declare member variables here. Examples:
-export var movementSpeed = 100;
+export var moveSpeed: int = 100;
 
-var screen_size;
+onready var stateMachine = load('res://scripts/StateMachine.gd').new($Anim);
+onready var idleState = load('res://scripts/states/Idle.gd').new();
+onready var moveState = load('res://scripts/states/Move.gd').new();
+onready var crouchState = load('res://scripts/states/Crouch.gd').new();
+onready var sneakState = load('res://scripts/states/Sneak.gd').new();
+onready var attackState = load('res://scripts/states/Attack.gd').new();
+
+onready var player = load('res://scripts/Player.gd').new();
+
+#onready var screen_size = get_viewport_rect().size;
 
 func _ready():
-	screen_size = get_viewport_rect().size
+	stateMachine.setState(idleState);
 	pass;
 
 func _process(delta):
-	var velocity = Vector2.ZERO;
-	if Input.is_action_pressed("game_right"):
-		velocity.x += 1;
-	if Input.is_action_pressed("game_left"):
-		velocity.x -= 1;
-	if Input.is_action_pressed("game_down"):
-		velocity.y += 1;
-	if Input.is_action_pressed("game_up"):
-		velocity.y -= 1;
+	#if (stateMachine.getState().isEndCondition()):
+	#	stateMachine.setState(idleState);
 
-	if velocity.length() > 0:
-		velocity = velocity.normalized() * movementSpeed;
-		$Anim.play('walk');
-		$Anim.flip_h = velocity.x < 0;
-	else:
-		$Anim.play('idle');
+	if player.pressedAttack():
+		stateMachine.setState(attackState);
 	
-	position += velocity * delta;
-	position.x = clamp(position.x, 0, screen_size.x);
-	position.y = clamp(position.y, 0, screen_size.y);
+	print(stateMachine.getState().isEndCondition());
+	if stateMachine.getState().isEndCondition():
+		stateMachine.setState(idleState);
+
+	#var moving = player.isMoving();
+	#var sneaking = player.isSneaking();
 	
+	#var state = idleState;
+	#if moving:
+	#	state = moveState;
+
+	#if sneaking:
+	#	state = sneakState;
+	#	if !moving:
+	#		state = crouchState;
+	
+	#stateMachine.setState(state);
+	
+	#if moving:
+	#	var movement = player.getMovement();
+	#	position += (movement.normalized() * moveSpeed) * delta;
+	#	$Anim.flip_h = movement.x < 0;
+	
+	stateMachine._process(delta);
 	pass;
